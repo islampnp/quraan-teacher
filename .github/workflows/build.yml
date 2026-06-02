@@ -23,56 +23,55 @@ jobs:
 
       - name: Download Arabic Fonts
         run: |
-          mkdir -p app/src/main/res/font
-          # Amiri
-          curl -L -o amiri.zip "https://fonts.google.com/download?family=Amiri" --silent
-          # Cairo
-          curl -L -o cairo.zip "https://fonts.google.com/download?family=Cairo" --silent
-          # Scheherazade New
-          curl -L -o scheherazade.zip "https://fonts.google.com/download?family=Scheherazade+New" --silent
-          
-          # Extract and rename fonts appropriately
-          if command -v unzip &> /dev/null; then
-            # For simplicity, download individual font files directly
-            echo "Downloading individual font files..."
-          fi
-          
-          # Download fonts individually from GitHub raw
-          rm -f *.zip
-
-      - name: Download individual font files
-        run: |
           FONT_DIR="app/src/main/res/font"
+          mkdir -p "$FONT_DIR"
           
-          # Amiri Regular
-          curl -L -o "$FONT_DIR/amiri_regular.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Regular.ttf" --silent --fail
+          # Download fonts from Google Fonts GitHub repo (static versions)
+          echo "Downloading Amiri Regular..."
+          curl -L --retry 3 -o "$FONT_DIR/amiri_regular.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Regular.ttf" || \
+            { echo "FAILED: Amiri Regular"; exit 1; }
           
-          # Amiri Bold
-          curl -L -o "$FONT_DIR/amiri_bold.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Bold.ttf" --silent --fail
+          echo "Downloading Amiri Bold..."
+          curl -L --retry 3 -o "$FONT_DIR/amiri_bold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/amiri/Amiri-Bold.ttf" || \
+            { echo "FAILED: Amiri Bold"; exit 1; }
           
-          # Cairo Regular
-          curl -L -o "$FONT_DIR/cairo_regular.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo-Regular.ttf" --silent --fail
+          echo "Downloading Cairo Regular..."
+          curl -L --retry 3 -o "$FONT_DIR/cairo_regular.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/static/Cairo-Regular.ttf" || \
+            { echo "FAILED: Cairo Regular trying variable..."; \
+              curl -L --retry 3 -o "$FONT_DIR/cairo_regular.ttf" \
+                "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo-Regular.ttf" || \
+              { echo "FAILED: Cairo Regular"; exit 1; }; }
           
-          # Cairo Bold
-          curl -L -o "$FONT_DIR/cairo_bold.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo-Bold.ttf" --silent --fail
+          echo "Downloading Cairo Bold..."
+          curl -L --retry 3 -o "$FONT_DIR/cairo_bold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/static/Cairo-Bold.ttf" || \
+            { echo "FAILED: Cairo Bold trying variable..."; \
+              curl -L --retry 3 -o "$FONT_DIR/cairo_bold.ttf" \
+                "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo-Bold.ttf" || \
+              { echo "FAILED: Cairo Bold"; exit 1; }; }
           
-          # Scheherazade New Regular
-          curl -L -o "$FONT_DIR/scheherazade_new_regular.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/ScheherazadeNew-Regular.ttf" --silent --fail
+          echo "Downloading Scheherazade New Regular..."
+          curl -L --retry 3 -o "$FONT_DIR/scheherazade_new_regular.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/static/ScheherazadeNew-Regular.ttf" || \
+            { echo "FAILED: Scheherazade Regular trying variable..."; \
+              curl -L --retry 3 -o "$FONT_DIR/scheherazade_new_regular.ttf" \
+                "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/ScheherazadeNew-Regular.ttf" || \
+              { echo "FAILED: Scheherazade Regular"; exit 1; }; }
           
-          # Scheherazade New Bold
-          curl -L -o "$FONT_DIR/scheherazade_new_bold.ttf" \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/ScheherazadeNew-Bold.ttf" --silent --fail
+          echo "Downloading Scheherazade New Bold..."
+          curl -L --retry 3 -o "$FONT_DIR/scheherazade_new_bold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/static/ScheherazadeNew-Bold.ttf" || \
+            { echo "FAILED: Scheherazade Bold trying variable..."; \
+              curl -L --retry 3 -o "$FONT_DIR/scheherazade_new_bold.ttf" \
+                "https://raw.githubusercontent.com/google/fonts/main/ofl/scheherazadenew/ScheherazadeNew-Bold.ttf" || \
+              { echo "FAILED: Scheherazade Bold"; exit 1; }; }
           
-          echo "Fonts downloaded:"
+          echo "All fonts downloaded successfully:"
           ls -la "$FONT_DIR/"
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew || true
+          echo "File count: $(ls -1 "$FONT_DIR/" | wc -l)"
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
