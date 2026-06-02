@@ -18,6 +18,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.quraan.teacher.app.data.local.entities.ProgressEntity
 import com.quraan.teacher.app.domain.model.LearningMilestone
+import com.quraan.teacher.app.domain.model.PathAdaptation
 import com.quraan.teacher.app.presentation.components.*
 import com.quraan.teacher.app.presentation.theme.*
 import java.text.SimpleDateFormat

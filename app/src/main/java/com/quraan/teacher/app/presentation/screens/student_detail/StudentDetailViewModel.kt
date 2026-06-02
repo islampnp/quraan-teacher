@@ -66,7 +66,7 @@ class StudentDetailViewModel @Inject constructor(
                         val milestones: List<LearningMilestone> = gson.fromJson(path.milestones, milestonesType) ?: emptyList()
                         val adaptationType = object : TypeToken<List<PathAdaptation>>() {}.type
                         val adaptations: List<PathAdaptation> = gson.fromJson(path.adaptationHistory, adaptationType) ?: emptyList()
-                        _ui_state.update { it.copy(activePath = path, milestones = milestones, adaptations = adaptations) }
+                        _uiState.update { it.copy(activePath = path, milestones = milestones, adaptations = adaptations) }
                     }
                 }
             } catch (_: Exception) {}

@@ -74,7 +74,7 @@ class DashboardViewModel @Inject constructor(
                         val top = data[3] as List<StudentEntity>
 
                         val now = Calendar.getInstance()
-                        val weekStart = now.clone() as Calendar
+                        val weekStart = Calendar.getInstance().apply { timeInMillis = now.timeInMillis }
                         weekStart.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
                         weekStart.set(Calendar.HOUR_OF_DAY, 0)
                         weekStart.set(Calendar.MINUTE, 0)
