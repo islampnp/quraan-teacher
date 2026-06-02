@@ -1,0 +1,46 @@
+package com.quraan.teacher.app.presentation.theme
+
+import androidx.compose.ui.graphics.Color
+
+val Primary = Color(0xFF1a5c38)
+val PrimaryLight = Color(0xFF2d8653)
+val PrimaryContainer = Color(0xFFc8e6d0)
+val OnPrimary = Color(0xFFFFFFFF)
+val Gold = Color(0xFFc9a84c)
+val GoldLight = Color(0xFFe8c97a)
+val GoldContainer = Color(0xFFfef3c7)
+val Background = Color(0xFFf8f6f0)
+val Surface = Color(0xFFFFFFFF)
+val SurfaceVariant = Color(0xFFf0ede6)
+val TextPrimary = Color(0xFF1e1e1e)
+val TextMuted = Color(0xFF6b7280)
+val Danger = Color(0xFFdc2626)
+val Warning = Color(0xFFd97706)
+val Success = Color(0xFF16a34a)
+val Info = Color(0xFF2563eb)
+
+val SessionGreen = Color(0xFF16a34a)
+val SessionBlue = Color(0xFF2563eb)
+val SessionAmber = Color(0xFFd97706)
+val SessionRed = Color(0xFFdc2626)
+
+val DifficultyStar = Color(0xFFf59e0b)
+val MoodExcellent = Color(0xFF16a34a)
+val MoodGood = Color(0xFF2563eb)
+val MoodAverage = Color(0xFFd97706)
+val MoodPoor = Color(0xFFdc2626)
+
+val ChipBeginner = Color(0xFFdbeafe)
+val ChipBeginnerText = Color(0xFF1e40af)
+val ChipIntermediate = Color(0xFFfef3c7)
+val ChipIntermediateText = Color(0xFF92400e)
+val ChipAdvanced = Color(0xFFdcfce7)
+val ChipAdvancedText = Color(0xFF166534)
+
+private val DarkPrimary = Color(0xFF4caf50)
+private val DarkPrimaryLight = Color(0xFF66bb6a)
+private val DarkBackground = Color(0xFF121212)
+private val DarkSurface = Color(0xFF1e1e1e)
+private val DarkSurfaceVariant = Color(0xFF2c2c2c)
+private val DarkTextPrimary = Color(0xFFe0e0e0)
+private val DarkTextMuted = Color(0xFF9e9e9e)

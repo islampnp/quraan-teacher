@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.QuraanTeacher" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:layoutDirection">rtl</item>
+        <item name="android:textDirection">rtl</item>
+        <item name="android:contextClickable">true</item>
+    </style>
+</resources>
