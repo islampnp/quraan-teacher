@@ -11,9 +11,10 @@ import com.google.gson.reflect.TypeToken
 import com.quraan.teacher.app.domain.model.LearningMilestone
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 data class StudentListItem(
@@ -52,57 +53,51 @@ class StudentsViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun loadStudents() {
-        combine(_searchQuery, _filterLevel) { query, level -> Pair(query, level) }
-            .flatMapLatest { (query, level) ->
-                val flow = when {
-                    query.isNotBlank() -> studentRepository.searchStudents(query)
-                    level != "ALL" -> studentRepository.getStudentsByLevel(level)
-                    else -> studentRepository.getAllActiveStudents()
+        viewModelScope.launch {
+            combine(_searchQuery, _filterLevel) { query, level -> Pair(query, level) }
+                .flatMapLatest { (query, level) ->
+                    val flow = when {
+                        query.isNotBlank() -> studentRepository.searchStudents(query)
+                        level != "ALL" -> studentRepository.getStudentsByLevel(level)
+                        else -> studentRepository.getAllActiveStudents()
+                    }
+                    flow
                 }
-                flow
-            }
-            .map { students ->
-                students.map { student ->
-                    val path = learningPathRepository.getActivePathByStudentOnce(student.id)
-                    val milestones = if (path != null) {
-                        val type = object : TypeToken<List<LearningMilestone>>() {}.type
-                        gson.fromJson<List<LearningMilestone>>(path.milestones, type) ?: emptyList()
-                    } else emptyList()
-                    val completedMilestones = milestones.count { it.isCompleted }
-                    val progressPct = if (milestones.isNotEmpty()) completedMilestones.toFloat() / milestones.size else 0f
+                .map { students ->
+                    coroutineScope {
+                        students.map { student ->
+                            async {
+                                val path = learningPathRepository.getActivePathByStudentOnce(student.id)
+                                val milestones = if (path != null) {
+                                    val type = object : TypeToken<List<LearningMilestone>>() {}.type
+                                    gson.fromJson<List<LearningMilestone>>(path.milestones, type) ?: emptyList()
+                                } else emptyList()
+                                val completedMilestones = milestones.count { it.isCompleted }
+                                val progressPct = if (milestones.isNotEmpty()) completedMilestones.toFloat() / milestones.size else 0f
 
-                    // Find last session
-                    val now = Calendar.getInstance()
-                    val progressList = progressRepository.getProgressByStudent(student.id)
-                    // We'll use a simple approach
-                    var lastDays: Int? = null
-                    try {
-                        val lastSession = progressRepository.getProgressByStudent(student.id).take(1)
-                        // Can't get synchronously, so just use null for now
-                    } catch (_: Exception) {}
-
-                    val lastFiveAyahs = listOf(
-                        student.totalMemorizedAyahs,
-                        (student.totalMemorizedAyahs * 0.9).toInt(),
-                        (student.totalMemorizedAyahs * 0.85).toInt(),
-                        (student.totalMemorizedAyahs * 0.8).toInt(),
-                        (student.totalMemorizedAyahs * 0.75).toInt()
-                    )
-
-                    StudentListItem(
-                        student = student,
-                        progressPercent = progressPct,
-                        lastSessionDaysAgo = lastDays,
-                        lastFiveAyahs = lastFiveAyahs
-                    )
+                                StudentListItem(
+                                    student = student,
+                                    progressPercent = progressPct,
+                                    lastSessionDaysAgo = null,
+                                    lastFiveAyahs = listOf(
+                                        student.totalMemorizedAyahs,
+                                        (student.totalMemorizedAyahs * 0.9).toInt(),
+                                        (student.totalMemorizedAyahs * 0.85).toInt(),
+                                        (student.totalMemorizedAyahs * 0.8).toInt(),
+                                        (student.totalMemorizedAyahs * 0.75).toInt()
+                                    )
+                                )
+                            }
+                        }.awaitAll()
+                    }
                 }
-            }
-            .catch { e ->
-                _uiState.update { it.copy(isLoading = false, error = e.message) }
-            }
-            .collect { list ->
-                _uiState.update { it.copy(isLoading = false, students = list, error = null) }
-            }
+                .catch { e ->
+                    _uiState.update { it.copy(isLoading = false, error = e.message) }
+                }
+                .collect { list ->
+                    _uiState.update { it.copy(isLoading = false, students = list, error = null) }
+                }
+        }
     }
 
     fun onSearchQueryChange(query: String) { _searchQuery.value = query }

@@ -42,7 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
                 .build()
         }
 
-        private class SeedDatabaseCallback : Callback() {
+        private class SeedDatabaseCallback : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 // Seed data is handled by SeedData class after DB creation

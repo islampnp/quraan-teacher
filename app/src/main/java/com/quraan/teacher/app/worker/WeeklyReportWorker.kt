@@ -25,14 +25,14 @@ class WeeklyReportWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     private val studentRepository: StudentRepository,
     private val progressRepository: ProgressRepository
-) : Worker(context, workerParams) {
+) : CoroutineWorker(context, workerParams) {
 
     companion object {
         const val CHANNEL_ID = "weekly_reports"
         const val NOTIFICATION_ID = 2001
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         createNotificationChannel()
 
         val calendar = Calendar.getInstance()

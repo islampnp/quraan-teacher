@@ -128,7 +128,9 @@ class LearningPathViewModel @Inject constructor(
                 val result = generateLearningPathUseCase(input)
                 result.onSuccess { path ->
                     val weeks = mutableListOf<GeneratedWeek>()
-                    val milestones = com.google.gson.Gson().fromJson(path.milestones, Array<com.quraan.teacher.app.domain.model.LearningMilestone>::class.java).toList()
+                    val gson = com.google.gson.Gson()
+                    val listType = object : com.google.gson.reflect.TypeToken<List<com.quraan.teacher.app.domain.model.LearningMilestone>>() {}.type
+                    val milestones: List<com.quraan.teacher.app.domain.model.LearningMilestone> = gson.fromJson(path.milestones, listType) ?: emptyList()
                     milestones.forEach { m ->
                         weeks.add(
                             GeneratedWeek(

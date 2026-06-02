@@ -23,7 +23,7 @@ class SessionReminderWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val scheduleRepository: ScheduleRepository
-) : Worker(context, workerParams) {
+) : CoroutineWorker(context, workerParams) {
 
     companion object {
         const val CHANNEL_ID = "session_reminders"
@@ -39,7 +39,7 @@ class SessionReminderWorker @AssistedInject constructor(
         }
     }
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         createNotificationChannel()
 
         val scheduleId = inputData.getLong("schedule_id", -1L)
