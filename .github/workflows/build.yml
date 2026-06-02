@@ -74,12 +74,25 @@ jobs:
           echo "File count: $(ls -1 "$FONT_DIR/" | wc -l)"
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        run: |
+          set -o pipefail
+          # Download and install Gradle
+          curl -L --retry 3 -o /tmp/gradle.zip \
+            "https://services.gradle.org/distributions/gradle-8.5-bin.zip"
+          unzip -q /tmp/gradle.zip -d /tmp/
+          export PATH="/tmp/gradle-8.5/bin:$PATH"
+          # Run build with stacktrace, capture all output
+          gradle assembleDebug --stacktrace 2>&1 | tee /tmp/gradle-build.log
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          arguments: assembleDebug
-          gradle-version: "8.5"
+          name: gradle-build-log
+          path: /tmp/gradle-build.log
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: QuraanTeacher-APK
