@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.*
+import androidx.hilt.work.HiltWorker
 import com.quraan.teacher.app.MainActivity
 import com.quraan.teacher.app.R
 import com.quraan.teacher.app.data.repository.ScheduleRepository
@@ -19,6 +20,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 
+@HiltWorker
 class SessionReminderWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,

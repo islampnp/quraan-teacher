@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.quraan.teacher.app.data.local.AppDatabase
 import com.quraan.teacher.app.data.local.dao.*
-import com.quraan.teacher.app.data.repository.*
-import com.quraan.teacher.app.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,69 +42,5 @@ object AppModule {
     @Provides
     fun provideQuizDao(db: AppDatabase): QuizDao = db.quizDao()
 
-    @Provides
     fun provideLearningPathDao(db: AppDatabase): LearningPathDao = db.learningPathDao()
-
-    @Provides
-    @Singleton
-    fun provideStudentRepository(dao: StudentDao): StudentRepository = StudentRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideProgressRepository(dao: ProgressDao): ProgressRepository = ProgressRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideScheduleRepository(dao: ScheduleDao): ScheduleRepository = ScheduleRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideAudioRepository(dao: AudioDao): AudioRepository = AudioRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideQuizRepository(dao: QuizDao): QuizRepository = QuizRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideLearningPathRepository(dao: LearningPathDao): LearningPathRepository = LearningPathRepository(dao)
-
-    @Provides
-    @Singleton
-    fun provideGetStudentLearningPathUseCase(
-        learningPathRepository: LearningPathRepository,
-        studentRepository: StudentRepository
-    ): GetStudentLearningPathUseCase = GetStudentLearningPathUseCase(learningPathRepository, studentRepository)
-
-    @Provides
-    @Singleton
-    fun provideUpdateProgressUseCase(
-        progressRepository: ProgressRepository,
-        studentRepository: StudentRepository,
-        learningPathRepository: LearningPathRepository
-    ): UpdateProgressUseCase = UpdateProgressUseCase(progressRepository, studentRepository, learningPathRepository)
-
-    @Provides
-    @Singleton
-    fun provideGenerateLearningPathUseCase(
-        learningPathRepository: LearningPathRepository,
-        studentRepository: StudentRepository
-    ): GenerateLearningPathUseCase = GenerateLearningPathUseCase(learningPathRepository, studentRepository)
-
-    @Provides
-    @Singleton
-    fun provideEvaluateStudentUseCase(
-        studentRepository: StudentRepository,
-        progressRepository: ProgressRepository,
-        learningPathRepository: LearningPathRepository,
-        quizRepository: QuizRepository
-    ): EvaluateStudentUseCase = EvaluateStudentUseCase(
-        studentRepository, progressRepository, learningPathRepository, quizRepository
-    )
-
-    @Provides
-    @Singleton
-    fun provideScheduleSessionUseCase(
-        scheduleRepository: ScheduleRepository
-    ): ScheduleSessionUseCase = ScheduleSessionUseCase(scheduleRepository)
 }

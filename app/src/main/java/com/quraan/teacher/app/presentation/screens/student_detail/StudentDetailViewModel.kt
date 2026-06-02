@@ -47,42 +47,53 @@ class StudentDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            try {
-                studentRepository.getStudentById(studentId).collect { student ->
-                    _uiState.update { it.copy(student = student) }
-                }
-            } catch (_: Exception) {}
-
-            try {
-                progressRepository.getProgressByStudent(studentId).collect { progress ->
-                    _uiState.update { it.copy(progress = progress) }
-                }
-            } catch (_: Exception) {}
-
-            try {
-                learningPathRepository.getActivePathByStudent(studentId).collect { path ->
-                    if (path != null) {
-                        val milestonesType = object : TypeToken<List<LearningMilestone>>() {}.type
-                        val milestones: List<LearningMilestone> = gson.fromJson(path.milestones, milestonesType) ?: emptyList()
-                        val adaptationType = object : TypeToken<List<PathAdaptation>>() {}.type
-                        val adaptations: List<PathAdaptation> = gson.fromJson(path.adaptationHistory, adaptationType) ?: emptyList()
-                        _uiState.update { it.copy(activePath = path, milestones = milestones, adaptations = adaptations) }
+            launch {
+                try {
+                    studentRepository.getStudentById(studentId).collect { student ->
+                        _uiState.update { it.copy(student = student) }
                     }
-                }
-            } catch (_: Exception) {}
+                } catch (_: Exception) {}
+            }
 
-            try {
-                audioRepository.getAudioByStudent(studentId).collect { audio ->
-                    _uiState.update { it.copy(audioRecordings = audio) }
-                }
-            } catch (_: Exception) {}
+            launch {
+                try {
+                    progressRepository.getProgressByStudent(studentId).collect { progress ->
+                        _uiState.update { it.copy(progress = progress) }
+                    }
+                } catch (_: Exception) {}
+            }
 
-            try {
-                quizRepository.getAttemptsByStudent(studentId).collect { attempts ->
-                    _uiState.update { it.copy(quizAttempts = attempts) }
-                }
-            } catch (_: Exception) {}
+            launch {
+                try {
+                    learningPathRepository.getActivePathByStudent(studentId).collect { path ->
+                        if (path != null) {
+                            val milestonesType = object : TypeToken<List<LearningMilestone>>() {}.type
+                            val milestones: List<LearningMilestone> = gson.fromJson(path.milestones, milestonesType) ?: emptyList()
+                            val adaptationType = object : TypeToken<List<PathAdaptation>>() {}.type
+                            val adaptations: List<PathAdaptation> = gson.fromJson(path.adaptationHistory, adaptationType) ?: emptyList()
+                            _uiState.update { it.copy(activePath = path, milestones = milestones, adaptations = adaptations) }
+                        }
+                    }
+                } catch (_: Exception) {}
+            }
 
+            launch {
+                try {
+                    audioRepository.getAudioByStudent(studentId).collect { audio ->
+                        _uiState.update { it.copy(audioRecordings = audio) }
+                    }
+                } catch (_: Exception) {}
+            }
+
+            launch {
+                try {
+                    quizRepository.getAttemptsByStudent(studentId).collect { attempts ->
+                        _uiState.update { it.copy(quizAttempts = attempts) }
+                    }
+                } catch (_: Exception) {}
+            }
+
+            // Mark loading done after initial data fetch
             _uiState.update { it.copy(isLoading = false) }
         }
     }

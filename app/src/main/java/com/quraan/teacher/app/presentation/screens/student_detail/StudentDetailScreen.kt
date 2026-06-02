@@ -153,7 +153,7 @@ private fun ProfileTab(student: com.quraan.teacher.app.data.local.entities.Stude
                     Text("أسلوب التعلم والوقت المفضل", style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        AssistChip(onClick = {}, label = { Text(when(student.learningStyle) { "VISUAL" -> "بصري" "AUDITORY" -> "سمعي" "REPETITIVE" -> "تكرار" else -> "مختلط" }) })
+                        AssistChip(onClick = {}, label = { Text(when(student.learningStyle) { "VISUAL" -> "بصري"; "AUDITORY" -> "سمعي"; "REPETITIVE" -> "تكرار"; else -> "مختلط" }) })
                         AssistChip(onClick = {}, label = { Text(when(student.preferredSessionTime) { "MORNING" -> "صباحية" "AFTERNOON" -> "بعد الظهر" else -> "مسائية" }) })
                     }
                 }
