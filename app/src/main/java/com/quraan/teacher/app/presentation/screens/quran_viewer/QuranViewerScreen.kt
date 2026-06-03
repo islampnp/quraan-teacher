@@ -114,7 +114,8 @@ fun QuranViewerScreen(
                         }
                     }
 
-                    items(1..surah.ayahCount) { ayahNumber ->
+                    items(surah.ayahCount) { index ->
+                        val ayahNumber = index + 1
                         val isHighlighted = uiState.highlightedAyahs.contains("${surah.name}:$ayahNumber")
                         com.quraan.teacher.app.presentation.components.QuranAyahCard(
                             ayahNumber = ayahNumber,

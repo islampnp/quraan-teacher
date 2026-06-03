@@ -1,7 +1,7 @@
 package com.quraan.teacher.app.presentation.theme
 
 import android.app.Activity
-import androidx.compose.foundation.layout.LayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes

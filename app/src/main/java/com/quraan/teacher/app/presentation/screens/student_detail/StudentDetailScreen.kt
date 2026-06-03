@@ -339,7 +339,7 @@ private fun SessionDetailCard(session: ProgressEntity) {
 
             if (expanded) {
                 Spacer(modifier = Modifier.height(8.dp))
-                HorizontalDivider()
+                    Divider()
                 Spacer(modifier = Modifier.height(8.dp))
                 InfoRow("الآيات المحفوظة", "${session.memorizedAyahs}")
                 InfoRow("المراجعة", "${session.reviewedAyahs}")

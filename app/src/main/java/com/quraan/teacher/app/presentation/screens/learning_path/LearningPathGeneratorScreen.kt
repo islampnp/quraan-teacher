@@ -60,7 +60,7 @@ fun LearningPathGeneratorScreen(
                 }
             }
 
-            HorizontalDivider()
+            Divider()
 
             if (uiState.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -128,6 +128,7 @@ fun LearningPathGeneratorScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Step1Evaluation(
     studentName: String,

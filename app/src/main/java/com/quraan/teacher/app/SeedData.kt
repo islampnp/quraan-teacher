@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.quraan.teacher.app.data.local.AppDatabase
 import com.quraan.teacher.app.data.local.entities.*
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.random.Random
 
@@ -63,7 +64,7 @@ object SeedData {
     private val midSurahs = surahNamesMiddle + surahNamesLong.take(5)
     private val advancedSurahs = surahNamesLong
 
-    fun seedDatabase(context: Context, database: AppDatabase) {
+    suspend fun seedDatabase(context: Context, database: AppDatabase) {
         val prefs: SharedPreferences = context.getSharedPreferences("quraan_seed", Context.MODE_PRIVATE)
         if (prefs.getBoolean(SEED_FLAG, false)) return
 

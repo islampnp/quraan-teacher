@@ -4,7 +4,11 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
 import com.quraan.teacher.app.data.local.AppDatabase
+import com.quraan.teacher.app.worker.WeeklyReportWorker
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -27,7 +31,9 @@ class QuraanTeacherApp : Application(), Configuration.Provider {
         instance = this
 
         // Seed data on first launch
-        SeedData.seedDatabase(this, database)
+        CoroutineScope(Dispatchers.IO).launch {
+            SeedData.seedDatabase(this@QuraanTeacherApp, database)
+        }
 
         // Schedule weekly report
         scheduleWeeklyReport()
@@ -38,7 +44,7 @@ class QuraanTeacherApp : Application(), Configuration.Provider {
             .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
             .build()
 
-        val weeklyReport = PeriodicWorkRequestBuilder<worker.WeeklyReportWorker>(
+        val weeklyReport = PeriodicWorkRequestBuilder<WeeklyReportWorker>(
             7, TimeUnit.DAYS
         )
             .setConstraints(constraints)

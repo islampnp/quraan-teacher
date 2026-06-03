@@ -87,7 +87,7 @@ fun AudioPlayer(
 
             Column(modifier = Modifier.weight(1f)) {
                 LinearProgressIndicator(
-                    progress = { playProgress },
+                    progress = playProgress,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),

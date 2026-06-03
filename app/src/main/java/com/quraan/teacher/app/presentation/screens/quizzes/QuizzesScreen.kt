@@ -123,7 +123,7 @@ private fun QuizAttemptScreen(
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             // Progress bar
             LinearProgressIndicator(
-                progress = { progress },
+                progress = progress,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 color = Primary,
                 trackColor = SurfaceVariant

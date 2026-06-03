@@ -2,6 +2,7 @@ package com.quraan.teacher.app.presentation.screens.dashboard
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,20 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
-import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 import com.quraan.teacher.app.data.local.entities.ProgressEntity
 import com.quraan.teacher.app.data.local.entities.StudentEntity
 import com.quraan.teacher.app.presentation.components.KPICard
 import com.quraan.teacher.app.presentation.theme.*
-import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -236,25 +229,33 @@ private fun DonutChart(data: List<Triple<String, Int, Color>>) {
 
 @Composable
 private fun MonthlyAyahsChart(data: List<Pair<String, Int>>) {
-    val modelProducer = remember { CartesianChartModelProducer() }
-
-    LaunchedEffect(data) {
-        modelProducer.runTransaction {
-            lineSeries { series(data.map { it.second.toFloat() }) }
-        }
-    }
-
-    CartesianChartHost(
-        chart = com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart(
-            rememberLineCartesianLayer(),
-            startAxis = rememberStartAxis(),
-            bottomAxis = rememberBottomAxis()
-        ),
-        modelProducer = modelProducer,
+    val maxValue = data.maxOfOrNull { it.second } ?: 1
+    val lineColor = Primary
+    Canvas(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-    )
+    ) {
+        val stepX = size.width / (data.size - 1).coerceAtLeast(1)
+        val points = data.mapIndexed { index, (_, value) ->
+            androidx.compose.ui.geometry.Offset(
+                x = index * stepX,
+                y = size.height - (value.toFloat() / maxValue * size.height * 0.9f) - 10f
+            )
+        }
+        if (points.size > 1) {
+            val path = Path().apply {
+                moveTo(points[0].x, points[0].y)
+                for (i in 1 until points.size) {
+                    lineTo(points[i].x, points[i].y)
+                }
+            }
+            drawPath(path, color = lineColor, style = Stroke(width = 3f))
+            points.forEach { point ->
+                drawCircle(color = lineColor, radius = 5f, center = point)
+            }
+        }
+    }
 }
 
 @Composable
@@ -282,7 +283,7 @@ private fun TopStudentRow(student: StudentEntity, onClick: () -> Unit) {
         }
         Text("${student.totalMemorizedAyahs} آية", style = MaterialTheme.typography.titleSmall, color = Primary)
     }
-    HorizontalDivider()
+    Divider()
 }
 
 @Composable
